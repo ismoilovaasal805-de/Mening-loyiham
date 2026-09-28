@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jismlarning zaryadlanishi — 8-sinf fizika</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    --bg: #0F1330;
+    --bg-soft: #151A3B;
+    --surface: #1D2350;
+    --surface-2: #262C5E;
+    --border: rgba(255,255,255,0.09);
+    --text: #F1F2FB;
+    --text-muted: #9BA2D4;
+    --pos: #FFC857;
+    --pos-soft: rgba(255,200,87,0.15);
+    --neg: #52C7F0;
+    --neg-soft: rgba(82,199,240,0.15);
+    --attract: #7CFFB2;
+    --repel: #FF7A7A;
+    --ring: #6B5CFF;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #F4F5FC;
+      --bg-soft: #FFFFFF;
+      --surface: #EEF0FB;
+      --surface-2: #E3E6FA;
+      --border: rgba(20,20,50,0.10);
+      --text: #171A34;
+      --text-muted: #565D8A;
+      --pos: #C98A00;
+      --pos-soft: rgba(201,138,0,0.12);
+      --neg: #0B7FAE;
+      --neg-soft: rgba(11,127,174,0.12);
+      --attract: #12A45B;
+      --repel: #D8465B;
+      --ring: #5A4CE0;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F4F5FC;
+    --bg-soft: #FFFFFF;
+    --surface: #EEF0FB;
+    --surface-2: #E3E6FA;
+    --border: rgba(20,20,50,0.10);
+    --text: #171A34;
+    --text-muted: #565D8A;
+    --pos: #C98A00;
+    --pos-soft: rgba(201,138,0,0.12);
+    --neg: #0B7FAE;
+    --neg-soft: rgba(11,127,174,0.12);
+    --attract: #12A45B;
+    --repel: #D8465B;
+    --ring: #5A4CE0;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .display {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    margin: 0;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    padding: 56px 20px 60px;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(107,92,255,0.35), transparent 55%),
+      radial-gradient(ellipse at 90% 0%, rgba(82,199,240,0.20), transparent 50%),
+      var(--bg-soft);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero-inner { max-width: 760px; margin: 0 auto; position: relative; z-index: 2; }
+  .hero-kicker {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-size: clamp(30px, 6vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+  .hero p {
+    color: var(--text-muted);
+    max-width: 52ch;
+    margin-top: 14px;
+    font-size: 16.5px;
+  }
+  .bolt {
+    position: absolute;
+    right: -30px;
+    top: -20px;
+    width: 220px;
+    opacity: 0.9;
+    z-index: 1;
+  }
+  @media (max-width: 560px) { .bolt { width: 140px; right: -40px; } }
+
+  /* ---------- Sections ---------- */
+  section.lesson {
+    margin-top: 56px;
+  }
+  .sec-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .sec-label .n {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  section.lesson h2 {
+    font-size: clamp(22px, 4vw, 27px);
+    letter-spacing: -0.01em;
+  }
+  section.lesson .explain {
+    margin-top: 14px;
+    color: var(--text);
+    font-size: 16px;
+  }
+  section.lesson .explain p { margin: 0 0 12px; }
+  section.lesson .explain b { color: var(--text); font-weight: 600; }
+  .note {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--ring);
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+    font-size: 14.5px;
+    color: var(--text-muted);
+  }
+
+  /* ---------- Sim panel ---------- */
+  .panel {
+    margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .panel-title {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: none;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+    transition: transform .12s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:hover { background: var(--bg-soft); border-color: var(--ring); }
+  .btn:active { transform: scale(0.97); }
+  .btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .btn.primary {
+    background: var(--ring);
+    border-color: var(--ring);
+    color: #fff;
+  }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn.ghost { background: transparent; }
+  .btn.pos { border-color: var(--pos); color: var(--pos); background: var(--pos-soft); }
+  .btn.neg { border-color: var(--neg); color: var(--neg); background: var(--neg-soft); }
+  .btn.on.pos { background: var(--pos); color: #171A34; }
+  .btn.on.neg { background: var(--neg); color: #171A34; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- Section 1: charge builder ---- */
+  .charge-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-content: flex-start;
+    min-height: 120px;
+    padding: 16px;
+    background: var(--bg-soft);
+    border: 1.5px dashed var(--border);
+    border-radius: 12px;
+  }
+  .particle {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    animation: pop .28s ease;
+  }
+  .particle.p { background: var(--pos); color: #171A34; }
+  .particle.e { background: var(--neg); color: #171A34; }
+  @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .charge-readout {
+    margin-top: 16px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .charge-badge {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    transition: background .2s ease, color .2s ease;
+  }
+  .charge-badge.pos { background: var(--pos-soft); color: var(--pos); }
+  .charge-badge.neg { background: var(--neg-soft); color: var(--neg); }
+
+  /* ---- Section 2: friction animation ---- */
+  .pair-toggle { display: flex; gap: 8px; }
+  .friction-stage {
+    position: relative;
+    height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+  }
+  .rod {
+    width: 92px; height: 92px;
+    border-radius: 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px;
+    background: var(--bg-soft);
+    border: 1.5px solid var(--border);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+    transition: transform .25s ease, border-color .3s ease, box-shadow .3s ease;
+    position: relative;
+    z-index: 2;
+  }
+  .rod .icon { font-size: 26px; }
+  .rod .sign {
+    font-size: 12px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    transition: all .3s ease;
+  }
+  .rod.charged-pos { border-color: var(--pos); box-shadow: 0 0 0 3px var(--pos-soft); }
+  .rod.charged-pos .sign { background: var(--pos-soft); color: var(--pos); }
+  .rod.charged-neg { border-color: var(--neg); box-shadow: 0 0 0 3px var(--neg-soft); }
+  .rod.charged-neg .sign { background: var(--neg-soft); color: var(--neg); }
+  .rod.rub-left { transform: translateX(10px); }
+  .rod.rub-right { transform: translateX(-10px); }
+  .track {
+    position: absolute;
+    left: 122px; right: 122px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+  }
+  .electron-dot {
+    position: absolute;
+    top: -5px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--neg);
+    box-shadow: 0 0 8px var(--neg);
+    transition: left 0.7s cubic-bezier(.4,0,.2,1), opacity .3s ease;
+    z-index: 3;
+  }
+  .friction-step {
+    margin-top: 14px;
+    min-height: 22px;
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* ---- Section 3: force simulator ---- */
+  .charge-picker { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .charge-picker .lbl { font-size: 13px; color: var(--text-muted); }
+  .force-stage {
+    position: relative;
+    height: 170px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .force-track { position: relative; width: 100%; max-width: 460px; height: 90px; }
+  .charge-ball {
+    position: absolute;
+    top: 50%;
+    width: 64px; height: 64px;
+    margin-top: -32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    transition: left 0.9s cubic-bezier(.4,0,.2,1), box-shadow .3s ease;
+    z-index: 2;
+  }
+  .charge-ball.pos { background: var(--pos); color: #171A34; box-shadow: 0 0 0 0 var(--pos-soft); }
+  .charge-ball.neg { background: var(--neg); color: #171A34; box-shadow: 0 0 0 0 var(--neg-soft); }
+  #ballA { left: 6%; }
+  #ballB { left: calc(94% - 64px); }
+  .force-arrow {
+    position: absolute;
+    top: 50%;
+    height: 3px;
+    background: var(--text-muted);
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity .3s ease, left .5s ease, width .5s ease, background .3s ease;
+  }
+  .force-arrow::after {
+    content: "";
+    position: absolute;
+    right: -1px; top: 50%;
+    width: 0; height: 0;
+    transform: translateY(-50%);
+  }
+  .force-result {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    min-height: 24px;
+  }
+  .force-result.attract { color: var(--attract); }
+  .force-result.repel { color: var(--repel); }
+
+  /* ---- Quiz ---- */
+  .quiz {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .quiz-q { font-weight: 600; margin-bottom: 12px; font-size: 15.5px; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    text-align: left;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .quiz-opt:hover { border-color: var(--ring); }
+  .quiz-opt:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .quiz-opt.correct { border-color: var(--attract); background: color-mix(in srgb, var(--attract) 15%, var(--bg-soft)); }
+  .quiz-opt.wrong { border-color: var(--repel); background: color-mix(in srgb, var(--repel) 15%, var(--bg-soft)); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-feedback {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--text-muted);
+    min-height: 20px;
+  }
+
+  footer {
+    max-width: 760px;
+    margin: 60px auto 0;
+    padding: 0 20px 20px;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <svg class="bolt" viewBox="0 0 100 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M55 5 L15 90 H45 L35 155 L90 60 H58 L70 5 Z" fill="url(#g1)" opacity="0.5"/>
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="100" y2="160" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#6B5CFF"/>
+        <stop offset="1" stop-color="#52C7F0"/>
+      </linearGradient>
+    </defs>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-kicker">8-sinf · Fizika · Elektr hodisalari</div>
+    <h1>Jismlarning zaryadlanishi</h1>
+    <p>Nega sochlaringiz sun'iy jun kiyim ustidan yechilganda "tikka" bo'lib qoladi? Nega ba'zan eshik tutqichiga tegganda uchqun sezasiz? Bularning barchasi elektr zaryadi bilan bog'liq. Keling, uch bosqichda bu hodisani o'rganamiz — har bir bo'limda o'zingiz sinab ko'radigan kichik simulyatsiya bor.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ===================== SECTION 1 ===================== -->
+  <section class="lesson" id="sec1">
+    <div class="sec-label"><span class="n">1</span> Bo'lim</div>
+    <h2>Elektr zaryadi haqida tushuncha</h2>
+    <div class="explain">
+      <p>Har qanday jism — stol, qalam, hattoki siz o'zingiz — juda mayda zarrachalardan, ya'ni <b>atomlardan</b> tashkil topgan. Atomning markazida yadro joylashgan bo'lib, unda <b>protonlar</b> bor. Yadro atrofida esa <b>elektronlar</b> aylanib yuradi.</p>
+      <p>Protonlar <b style="color:var(--pos)">musbat zaryadga (+)</b>, elektronlar esa <b style="color:var(--neg)">manfiy zaryadga (−)</b> ega. Odatdagi holatda atomda protonlar soni elektronlar soniga teng bo'ladi — shuning uchun jism <b>neytral</b> (zaryadsiz) hisoblanadi.</p>
+    </div>
+    <div class="note">Eslab qoling: proton — musbat (+), elektron — manfiy (−). Zaryad shu ikkisining nisbatidan kelib chiqadi.</div>
+
+    <div class="panel">
+      <div class="panel-title">
+        <span>Simulyatsiya: zaryadlarni o'zingiz qo'shib ko'ring</span>
+        <button class="btn ghost" id="s1-reset">Tozalash</button>
+      </div>
+      <div class="btn-row" style="margin-bottom:16px;">
+        <button class="btn pos" id="s1-add-p">+ Proton qo'shish</button>
+        <button class="btn neg" id="s1-add-e">+ Elektron qo'shish</button>
+      </div>
+      <div class="charge-box" id="s1-box"></div>
+      <div class="charge-readout">
+        <span style="color:var(--text-muted); font-size:14px;">Jism zaryadi:</span>
+        <span class="charge-badge" id="s1-badge">Neytral (0)</span>
+      </div>
+    </div>
+
+    <div class="quiz" id="quiz1">
+      <div class="quiz-q">Agar jismda 5 ta proton va 7 ta elektron bo'lsa, bu jism qanday zaryadlangan?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" data-correct="false">Musbat zaryadlangan</button>
+        <button class="quiz-opt" data-correct="true">Manfiy zaryadlangan (elektronlar ortiqcha)</button>
+        <button class="quiz-opt" data-correct="false">Neytral, chunki sonlar yaqin</button>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 2 ===================== -->
+  <section class="lesson" id="sec2">
+    <div class="sec-label"><span class="n">2</span> Bo'lim</div>
+    <h2>Jismlarning zaryadlanish sababi</h2>
+    <div class="explain">
+      <p>Ikki neytral jismni bir-biriga <b>ishqalasak</b>, ularning yuzasidagi eng "erkin" elektronlar bir jismdan ikkinchisiga o'tib ketishi mumkin. Proton yadro ichida mahkam turgani uchun u joyidan qo'zg'almaydi — faqat <b>elektronlar</b> ko'chadi.</p>
+      <p>Masalan, shisha tayoqchani ipak mato bilan ishqalasak, elektronlar shishadan ipakka o'tadi: shisha protonlari ortiqcha qolib <b style="color:var(--pos)">musbat</b>, ipak esa elektronga boy bo'lib <b style="color:var(--neg)">manfiy</b> zaryadlanadi. Ebonit tayoqchani jun matoga ishqalaganda esa, aksincha, elektronlar jundan ebonitga o'tadi.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">
+        <span>Animatsiya: ishqalash orqali zaryadlanish</span>
+        <div class="pair-toggle">
+          <button class="btn on" id="s2-pair-gs" data-pair="gs">Shisha–Ipak</button>
+          <button class="btn" id="s2-pair-ew" data-pair="ew">Ebonit–Jun</button>
+        </div>
+      </div>
+
+      <div class="friction-stage">
+        <div class="rod" id="s2-rodA">
+          <div class="icon">🧪</div>
+          <div class="name" id="s2-nameA">Shisha</div>
+          <div class="sign" id="s2-signA">neytral</div>
+        </div>
+        <div class="track" id="s2-track"></div>
+        <div class="rod" id="s2-rodB">
+          <div class="icon">🧵</div>
+          <div class="name" id="s2-nameB">Ipak</div>
+          <div class="sign" id="s2-signB">neytral</div>
+        </div>
+      </div>
+      <div class="friction-step" id="s2-step">Tugmani bosib, ikki jismni ishqalab ko'ring.</div>
+      <div class="btn-row" style="margin-top:12px; justify-content:center;">
+        <button class="btn primary" id="s2-rub">Ishqalash</button>
+        <button class="btn ghost" id="s2-reset">Qayta boshlash</button>
+      </div>
+    </div>
+
+    <div class="quiz" id="quiz2">
+      <div class="quiz-q">Shisha tayoqchani ipakka ishqalaganda elektronlar shishadan ipakka o'tadi. Shu holda shisha qanday zaryadlanadi?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" data-correct="true">Musbat, chunki elektronlari kamayib, protonlari ortiqcha qoladi</button>
+        <button class="quiz-opt" data-correct="false">Manfiy, chunki u ipakka tegdi</button>
+        <button class="quiz-opt" data-correct="false">Zaryadi o'zgarmaydi</button>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 3 ===================== -->
+  <section class="lesson" id="sec3">
+    <div class="sec-label"><span class="n">3</span> Bo'lim</div>
+    <h2>Zaryadlarning o'zaro ta'siri</h2>
+    <div class="explain">
+      <p>Zaryadlangan jismlar bir-biriga elektr kuchi bilan ta'sir qiladi. Bu ta'sirning oddiy qonuni bor:</p>
+      <p><b style="color:var(--repel)">Bir xil zaryadlar</b> (musbat–musbat yoki manfiy–manfiy) bir-birini <b>itaradi</b>. <b style="color:var(--attract)">Har xil zaryadlar</b> (musbat–manfiy) esa bir-birini <b>tortadi</b>.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><span>Simulyatsiya: ikki zaryadning ta'sirini kuzating</span></div>
+
+      <div style="display:flex; justify-content:space-around; gap:16px; flex-wrap:wrap;">
+        <div class="charge-picker">
+          <span class="lbl">A zaryad</span>
+          <div class="btn-row">
+            <button class="btn pos on" id="s3-a-pos" data-ball="A" data-sign="pos">+</button>
+            <button class="btn neg" id="s3-a-neg" data-ball="A" data-sign="neg">−</button>
+          </div>
+        </div>
+        <div class="charge-picker">
+          <span class="lbl">B zaryad</span>
+          <div class="btn-row">
+            <button class="btn pos" id="s3-b-pos" data-ball="B" data-sign="pos">+</button>
+            <button class="btn neg on" id="s3-b-neg" data-ball="B" data-sign="neg">−</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="force-stage">
+        <div class="force-track">
+          <div class="charge-ball pos" id="ballA">+</div>
+          <div class="charge-ball neg" id="ballB">−</div>
+        </div>
+      </div>
+      <div class="force-result" id="s3-result">A = musbat, B = manfiy → har xil zaryadlar bir-birini tortadi</div>
+      <div class="btn-row" style="margin-top:10px; justify-content:center;">
+        <button class="btn primary" id="s3-run">Ta'sirni ko'rsatish</button>
+        <button class="btn ghost" id="s3-reset">Boshlang'ich holatga qaytarish</button>
+      </div>
+    </div>
+
+    <div class="quiz" id="quiz3">
+      <div class="quiz-q">Ikkita manfiy zaryadlangan sharcha bir-biriga yaqinlashtirilsa, ular qanday harakat qiladi?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" data-correct="false">Bir-biriga tortiladi</button>
+        <button class="quiz-opt" data-correct="true">Bir-biridan itariladi, chunki zaryadlari bir xil</button>
+        <button class="quiz-opt" data-correct="false">Hech qanday ta'sir bo'lmaydi</button>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Fizika · 8-sinf · "Jismlarning zaryadlanishi" mavzusi bo'yicha interaktiv dars</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Quiz logic (shared) ---------- */
+  document.querySelectorAll('.quiz').forEach(function(quiz){
+    var opts = quiz.querySelectorAll('.quiz-opt');
+    var feedback = quiz.querySelector('.quiz-feedback');
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        var already = quiz.dataset.answered;
+        if (already) return;
+        quiz.dataset.answered = "1";
+        var isCorrect = opt.getAttribute('data-correct') === 'true';
+        opts.forEach(function(o){
+          o.disabled = true;
+          if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+        });
+        if (!isCorrect) opt.classList.add('wrong');
+        feedback.textContent = isCorrect
+          ? "To'g'ri! Yaxshi tushunibsiz. ✓"
+          : "Unchalik emas — to'g'ri javob yashil rangda belgilandi. Qaytadan o'qib chiqing.";
+      });
+    });
+  });
+
+  /* ================= SECTION 1: charge builder ================= */
+  (function(){
+    var box = document.getElementById('s1-box');
+    var badge = document.getElementById('s1-badge');
+    var protons = 0, electrons = 0;
+    var MAX = 12;
+
+    function render(){
+      badge.classList.remove('pos','neg');
+      var net = protons - electrons;
+      if (net > 0) { badge.textContent = "Musbat zaryadlangan (+" + net + ")"; badge.classList.add('pos'); }
+      else if (net < 0) { badge.textContent = "Manfiy zaryadlangan (" + net + ")"; badge.classList.add('neg'); }
+      else { badge.textContent = "Neytral (0)"; }
+      document.getElementById('s1-add-p').disabled = protons >= MAX;
+      document.getElementById('s1-add-e').disabled = electrons >= MAX;
+    }
+
+    document.getElementById('s1-add-p').addEventListener('click', function(){
+      if (protons >= MAX) return;
+      protons++;
+      var d = document.createElement('div');
+      d.className = 'particle p';
+      d.textContent = '+';
+      box.appendChild(d);
+      render();
+    });
+    document.getElementById('s1-add-e').addEventListener('click', function(){
+      if (electrons >= MAX) return;
+      electrons++;
+      var d = document.createElement('div');
+      d.className = 'particle e';
+      d.textContent = '−';
+      box.appendChild(d);
+      render();
+    });
+    document.getElementById('s1-reset').addEventListener('click', function(){
+      protons = 0; electrons = 0;
+      box.innerHTML = '';
+      render();
+    });
+    render();
+  })();
+
+  /* ================= SECTION 2: friction animation ================= */
+  (function(){
+    var pairs = {
+      gs: { iconA:'🧪', nameA:'Shisha', iconB:'🧵', nameB:'Ipak', from:'A' }, // electrons leave glass -> A ends +, B ends -
+      ew: { iconA:'⚫', nameA:'Ebonit', iconB:'🧶', nameB:'Jun',  from:'B' }  // electrons leave wool -> A ends -, B ends +
+    };
+    var current = 'gs';
+    var rodA = document.getElementById('s2-rodA');
+    var rodB = document.getElementById('s2-rodB');
+    var nameA = document.getElementById('s2-nameA');
+    var nameB = document.getElementById('s2-nameB');
+    var signA = document.getElementById('s2-signA');
+    var signB = document.getElementById('s2-signB');
+    var iconA = rodA.querySelector('.icon');
+    var iconB = rodB.querySelector('.icon');
+    var track = document.getElementById('s2-track');
+    var step = document.getElementById('s2-step');
+    var rubBtn = document.getElementById('s2-rub');
+    var running = false;
+
+    function resetVisual(){
+      rodA.classList.remove('charged-pos','charged-neg','rub-left','rub-right');
+      rodB.classList.remove('charged-pos','charged-neg','rub-left','rub-right');
+      signA.textContent = 'neytral';
+      signB.textContent = 'neytral';
+      track.querySelectorAll('.electron-dot').forEach(function(d){ d.remove(); });
+      step.textContent = "Tugmani bosib, ikki jismni ishqalab ko'ring.";
+      rubBtn.disabled = false;
+    }
+
+    function applyPair(key){
+      current = key;
+      var p = pairs[key];
+      iconA.textContent = p.iconA; nameA.textContent = p.nameA;
+      iconB.textContent = p.iconB; nameB.textContent = p.nameB;
+      resetVisual();
+      document.getElementById('s2-pair-gs').classList.toggle('on', key === 'gs');
+      document.getElementById('s2-pair-ew').classList.toggle('on', key === 'ew');
+    }
+
+    document.getElementById('s2-pair-gs').addEventListener('click', function(){ if(!running) applyPair('gs'); });
+    document.getElementById('s2-pair-ew').addEventListener('click', function(){ if(!running) applyPair('ew'); });
+    document.getElementById('s2-reset').addEventListener('click', function(){ if(!running) resetVisual(); });
+
+    rubBtn.addEventListener('click', function(){
+      if (running) return;
+      running = true;
+      rubBtn.disabled = true;
+      var p = pairs[current];
+      var fromLeft = p.from === 'A'; // true: electrons travel left(A) -> right(B)
+      step.textContent = "Jismlar bir-biriga ishqalanmoqda...";
+      rodA.classList.add('rub-left');
+      rodB.classList.add('rub-right');
+
+      setTimeout(function(){
+        rodA.classList.remove('rub-left');
+        rodB.classList.remove('rub-right');
+        step.textContent = "Elektronlar " + (fromLeft ? nameA.textContent : nameB.textContent) +
+          " dan " + (fromLeft ? nameB.textContent : nameA.textContent) + " ga o'tmoqda...";
+
+        var count = 5;
+        var trackWidth = track.offsetWidth;
+        var i = 0;
+        function sendDot(){
+          if (i >= count) {
+            setTimeout(function(){
+              if (fromLeft) {
+                rodA.classList.add('charged-pos'); signA.textContent = 'musbat (+)';
+                rodB.classList.add('charged-neg'); signB.textContent = 'manfiy (−)';
+              } else {
+                rodB.classList.add('charged-pos'); signB.textContent = 'musbat (+)';
+                rodA.classList.add('charged-neg'); signA.textContent = 'manfiy (−)';
+              }
+              step.textContent = "Tayyor! " + nameA.textContent + " — " + signA.textContent +
+                ", " + nameB.textContent + " — " + signB.textContent + ".";
+              running = false;
+            }, 250);
+            return;
+          }
+          var dot = document.createElement('div');
+          dot.className = 'electron-dot';
+          var startLeft = fromLeft ? 0 : trackWidth - 12;
+          var endLeft = fromLeft ? trackWidth - 12 : 0;
+          dot.style.left = startLeft + 'px';
+          dot.style.top = (i % 2 === 0 ? -14 : 4) + 'px';
+          track.appendChild(dot);
+          requestAnimationFrame(function(){
+            requestAnimationFrame(function(){
+              dot.style.left = endLeft + 'px';
+            });
+          });
+          setTimeout(function(){ dot.style.opacity = '0'; }, 650);
+          i++;
+          setTimeout(sendDot, 220);
+        }
+        sendDot();
+      }, 450);
+    });
+
+    applyPair('gs');
+  })();
+
+  /* ================= SECTION 3: force simulator ================= */
+  (function(){
+    var state = { A: 'pos', B: 'neg' };
+    var ballA = document.getElementById('ballA');
+    var ballB = document.getElementById('ballB');
+    var result = document.getElementById('s3-result');
+    var runBtn = document.getElementById('s3-run');
+
+    function updateBallVisual(which){
+      var el = which === 'A' ? ballA : ballB;
+      var sign = state[which];
+      el.classList.remove('pos','neg');
+      el.classList.add(sign);
+      el.textContent = sign === 'pos' ? '+' : '−';
+    }
+
+    function updateButtons(){
+      ['A','B'].forEach(function(w){
+        document.getElementById('s3-' + w.toLowerCase() + '-pos').classList.toggle('on', state[w] === 'pos');
+        document.getElementById('s3-' + w.toLowerCase() + '-neg').classList.toggle('on', state[w] === 'neg');
+      });
+    }
+
+    function describeAndReset(){
+      var same = state.A === state.B;
+      var labelA = state.A === 'pos' ? 'musbat' : 'manfiy';
+      var labelB = state.B === 'pos' ? 'musbat' : 'manfiy';
+      result.classList.remove('attract','repel');
+      if (same) {
+        result.textContent = "A = " + labelA + ", B = " + labelB + " → bir xil zaryadlar bir-birini itaradi";
+      } else {
+        result.textContent = "A = " + labelA + ", B = " + labelB + " → har xil zaryadlar bir-birini tortadi";
+      }
+      ballA.style.left = '6%';
+      ballB.style.left = 'calc(94% - 64px)';
+    }
+
+    document.querySelectorAll('.charge-picker button').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var which = btn.getAttribute('data-ball');
+        var sign = btn.getAttribute('data-sign');
+        state[which] = sign;
+        updateBallVisual(which);
+        updateButtons();
+        describeAndReset();
+      });
+    });
+
+    runBtn.addEventListener('click', function(){
+      var same = state.A === state.B;
+      result.classList.remove('attract','repel');
+      if (same) {
+        ballA.style.left = '2%';
+        ballB.style.left = 'calc(98% - 64px)';
+        result.classList.add('repel');
+        result.textContent = "Itarilmoqda — zaryadlar bir xil bo'lgani uchun bir-biridan uzoqlashadi.";
+      } else {
+        ballA.style.left = 'calc(50% - 68px)';
+        ballB.style.left = 'calc(50% + 4px)';
+        result.classList.add('attract');
+        result.textContent = "Tortilmoqda — zaryadlar har xil bo'lgani uchun bir-biriga yaqinlashadi.";
+      }
+    });
+
+    document.getElementById('s3-reset').addEventListener('click', describeAndReset);
+
+    updateBallVisual('A'); updateBallVisual('B'); updateButtons(); describeAndReset();
+  })();
+
+})();
+</script>
+</body>
+</html>
